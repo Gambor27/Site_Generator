@@ -96,3 +96,6 @@ def text_to_textnodes(text):
     after_images = split_nodes_image(after_code)
     after_link = split_nodes_link(after_images)
     return after_link
+
+
+
