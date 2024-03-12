@@ -59,12 +59,40 @@ def generate_page(from_path, template_path, dest_path):
     with open(dest_path, 'w') as file:
         file.write(output_html)
 
-        
-
+def generate_page_r(from_path, template_path, dest_path):
+    contents = os.listdir(from_path)
+    files = []
+    directories = []
+    with open(template_path, 'r') as file:
+        template_contents = file.read()
+    for object in contents:
+        if os.path.isfile(os.path.join(from_path, object)):
+            files.append(object)
+        else:
+            directories.append(object)
+    for filename in files:
+        if filename.endswith(".md"):
+            file_path = os.path.join(from_path, filename)
+            with open(file_path, 'r') as source:
+                source_contents = source.read()
+            parent = markdown_to_html_node(source_contents)
+            body = parent.to_html()
+            title = extract_title(source_contents)
+            new_filename = filename.replace(".md", ".html")
+            output_html = template_contents.replace("{{ Title }}", title)
+            output_html = output_html.replace("{{ Content }}", body)
+            if not os.path.exists(dest_path):
+                print(dest_path)
+                os.makedirs(dest_path)
+            with open(os.path.join(dest_path, new_filename), 'w') as target:
+                target.write(output_html)
+    for new_directory in directories:
+        print(new_directory)
+        generate_page_r(from_path + new_directory, template_path, dest_path + new_directory)
     
 
 def main():
     directory_copy()
-    generate_page("./content/index.md", "./template.html", "./public/index.html")
+    generate_page_r("./content/", "./template.html", "./public/")
 
 main()

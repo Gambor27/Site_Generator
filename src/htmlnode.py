@@ -25,8 +25,8 @@ class LeafNode(HTMLNode):
 
     def to_html(self):
         html = ''
-        if not self.value:
-            raise ValueError
+        #if not self.value:
+        #   raise ValueError
         if self.tag:
             html += f'<{self.tag}>'
         if self.props:
